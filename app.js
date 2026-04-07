@@ -47,8 +47,8 @@ const fetchMenuConfig = async () => {
         // Migrate string arrays to object if necessary directly inside render loop
         dynamicMenuHtml = `
             <div class="permissions-actions" style="display:flex; justify-content:flex-end; gap:0.5rem; margin-bottom: 1rem; margin-top: -0.5rem;">
-                <button type="button" class="btn-select-all" style="color:#4f46e5; background:#e0e7ff; border:none; cursor:pointer; font-size:0.75rem; font-weight:600; padding: 0.4rem 0.85rem; border-radius: 6px; font-family:'Inter', sans-serif; transition: background 0.2s;">เลือกทั้งหมด</button>
-                <button type="button" class="btn-clear-all" style="color:#475569; background:#f1f5f9; border:none; cursor:pointer; font-size:0.75rem; font-weight:600; padding: 0.4rem 0.85rem; border-radius: 6px; font-family:'Inter', sans-serif; transition: background 0.2s;">ล้าง</button>
+                <button type="button" class="btn-select-all" style="color:#2563eb; background:#eff6ff; border:none; cursor:pointer; font-size:0.75rem; font-weight:500; padding: 0.35rem 0.65rem; border-radius: 4px; font-family:'Inter', sans-serif;">เลือกทั้งหมด</button>
+                <button type="button" class="btn-clear-all" style="color:#475569; background:#ffffff; border: 1px solid #e2e8f0; cursor:pointer; font-size:0.75rem; font-weight:500; padding: 0.35rem 0.65rem; border-radius: 4px; font-family:'Inter', sans-serif;">ล้าง</button>
             </div>
             <div class="permissions-tree">
         `;
