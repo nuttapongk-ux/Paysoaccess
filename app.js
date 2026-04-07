@@ -46,10 +46,6 @@ const fetchMenuConfig = async () => {
 
         // Migrate string arrays to object if necessary directly inside render loop
         dynamicMenuHtml = `
-            <div class="permissions-actions" style="display:flex; justify-content:flex-end; align-items:center; gap:0.5rem; margin-bottom: 1rem; margin-top: -0.5rem;">
-                <button type="button" class="btn-select-all" style="color:#2563eb; background:#eff6ff; border:none; cursor:pointer; font-size:0.75rem; font-weight:500; padding: 0.35rem 0.75rem; border-radius: 4px; font-family:'aktiv-grotesk-thai', 'Inter', sans-serif; align-self: flex-start; line-height: 1.2;">เลือกทั้งหมด</button>
-                <button type="button" class="btn-clear-all" style="color:#475569; background:#ffffff; border: 1px solid #e2e8f0; cursor:pointer; font-size:0.75rem; font-weight:500; padding: 0.35rem 0.75rem; border-radius: 4px; font-family:'aktiv-grotesk-thai', 'Inter', sans-serif; align-self: flex-start; line-height: 1.2;">ล้าง</button>
-            </div>
             <div class="permissions-tree">
         `;
 
@@ -114,20 +110,6 @@ document.addEventListener('change', (e) => {
             
             parentCb.checked = allChecked;
             parentCb.indeterminate = someChecked && !allChecked;
-        }
-    }
-});
-
-document.addEventListener('click', (e) => {
-    if(e.target.classList.contains('btn-select-all')) {
-        const wrapper = e.target.closest('.permissions-wrapper');
-        if(wrapper) wrapper.querySelectorAll('input[type="checkbox"]:not(:disabled)').forEach(c => c.checked = true);
-    }
-    if(e.target.classList.contains('btn-clear-all')) {
-        const wrapper = e.target.closest('.permissions-wrapper');
-        if(wrapper) {
-            wrapper.querySelectorAll('input[type="checkbox"]:not(:disabled)').forEach(c => c.checked = false);
-            wrapper.querySelectorAll('.parent-checkbox').forEach(c => c.indeterminate = false);
         }
     }
 });
