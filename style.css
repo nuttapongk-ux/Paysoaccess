@@ -588,3 +588,178 @@ header {
     font-style: italic;
     opacity: 0.6;
 }
+
+/* --- New Mockup Styles --- */
+.global-section {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    font-size: 1.05rem;
+    color: #334155;
+    margin-bottom: 1.25rem;
+    font-weight: 700;
+}
+
+.user-entry-panel {
+    background: #ffffff;
+    border: 1px dashed #6366f1;
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+
+.user-entry-title {
+    font-size: 1rem;
+    color: #4f46e5;
+    font-weight: 700;
+}
+
+.btn-import {
+    background: #f97316;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Role Grid Buttons */
+.role-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 0.75rem;
+}
+
+.role-option input {
+    display: none;
+}
+
+.role-option span {
+    display: block;
+    text-align: center;
+    padding: 0.75rem 0.5rem;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.role-option input:checked + span {
+    background: #e0e7ff;
+    border-color: #4f46e5;
+    color: #4f46e5;
+}
+
+/* Advanced Permissions Toggle */
+.toggle-btn {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 1rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-weight: 600;
+    color: #334155;
+    cursor: pointer;
+}
+
+/* Buttons */
+.btn-primary {
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-outline {
+    background: #ffffff;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Footer Section */
+.form-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.queue-status {
+    font-size: 0.95rem;
+    color: #64748b;
+}
+
+.footer-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 1rem; }
+.mt-4 { margin-top: 1.5rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.pt-3 { padding-top: 1rem; }
+
+/* Queued badges */
+.queued-users-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.queue-badge {
+    display: flex;
+    align-items: center;
+    background: #e2e8f0;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    gap: 1rem;
+}
+
+.queue-badge .user-info {
+    display: flex;
+    flex-direction: column;
+}
+.queue-badge .user-info strong { font-size: 0.9rem; color: #1e293b; }
+.queue-badge .user-info span { font-size: 0.75rem; color: #475569; }
+
+.remove-queue-btn {
+    background: none;
+    border: none;
+    color: #dc2626;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1rem;
+}
+

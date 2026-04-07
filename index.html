@@ -12,131 +12,104 @@
     
     <div class="container">
         <!-- Request Form Section -->
-        <main class="glass-panel form-section">
+        <main class="glass-panel form-section" style="flex: 2;">
             <header>
-                <h1>Request Access</h1>
-                <p>Submit your details to request user and role access for Merchant Control.</p>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <h1 style="color: #1e293b; font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">Request Access</h1>
+                        <p style="color: #64748b; font-size: 0.95rem;">Submit your details to request Merchant Control access.</p>
+                    </div>
+                    <div style="display:flex; gap:1rem; align-items:center;">
+                        <a href="admin.html" class="btn-outline" style="text-decoration:none;">⚙️ Admin</a>
+                        <button type="button" id="logoutBtn" class="btn-outline">Logout</button>
+                    </div>
+                </div>
             </header>
             
-            <form id="accessRequestForm" class="request-form">
-                <div class="form-group">
-                    <label for="firstName">First Name</label>
-                    <input type="text" id="firstName" name="firstName" required placeholder="Enter your first name">
-                </div>
-                
-                <div class="form-group">
-                    <label for="lastName">Last Name</label>
-                    <input type="text" id="lastName" name="lastName" required placeholder="Enter your last name">
-                </div>
-                
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" name="email" required placeholder="your.email@example.com">
-                </div>
-                
-                <div class="form-group">
-                    <label for="department">Department</label>
-                    <input type="text" id="department" name="department" required placeholder="IT, Finance, etc.">
-                </div>
-                
-                <div class="form-group">
-                    <label for="requestedRole">Requested Role</label>
-                    <div class="select-wrapper">
-                        <select id="requestedRole" name="requestedRole" required>
-                            <option value="" disabled selected>Select a role...</option>
-                            <option value="Admin">Admin</option>
-                            <option value="Editor">Editor</option>
-                            <option value="Viewer">Viewer</option>
-                            <option value="Operator">Operator</option>
-                            <option value="Support">Support</option>
-                        </select>
+            <form id="accessRequestForm" class="request-form" style="display:block;">
+                <!-- Store Info -->
+                <div class="glass-panel-inner global-section">
+                    <h3 class="section-title">🏬 ข้อมูลร้านค้า (ใช้ร่วมกัน)</h3>
+                    <div class="inner-grid">
+                        <div class="form-group">
+                            <label>รหัสร้านค้า (ID)</label>
+                            <input type="text" id="storeId" required placeholder="ระบุตัวเลข (สูงสุด 5 หลัก)" maxlength="5">
+                        </div>
+                        <div class="form-group">
+                            <label>ชื่อร้านค้า</label>
+                            <input type="text" id="storeName" required placeholder="ระบุชื่อร้านค้า">
+                        </div>
                     </div>
                 </div>
-                
-                <div class="form-group full-width">
-                    <label>Menu Permissions</label>
-                    <div class="permissions-container" id="permissionsContainer">
-                        <!-- Gen Items -->
-                        <div class="permissions-group">
-                            <div class="permissions-list">
-                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="แดชบอร์ด"> <span class="checkmark"></span>แดชบอร์ด</label>
-                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="ยอดรวมรายได้"> <span class="checkmark"></span>ยอดรวมรายได้</label>
-                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="ประวัติการโอนเงินคืน"> <span class="checkmark"></span>ประวัติการโอนเงินคืน</label>
-                            </div>
+
+                <!-- User Entry Panel -->
+                <div class="user-entry-panel">
+                    <div class="panel-header">
+                        <h4 class="user-entry-title">👤 เพิ่มผู้ใช้งานคนที่ <span id="currentUserIndex">1</span></h4>
+                        <button type="button" class="btn-import">📄 Import CSV</button>
+                    </div>
+                    
+                    <div class="inner-grid mt-4">
+                        <div class="form-group">
+                            <label>Username</label>
+                            <input type="text" id="usernameInput" placeholder="ระบุ Username" required>
                         </div>
+                        <div class="form-group">
+                            <label>อีเมล</label>
+                            <input type="email" id="emailInput" placeholder="email@ex.com" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group mt-4">
+                        <label>บทบาท (Role)</label>
+                        <div class="role-grid">
+                            <label class="role-option"><input type="radio" name="roleInput" value="Admin" required><span>Admin</span></label>
+                            <label class="role-option"><input type="radio" name="roleInput" value="IT"><span>IT</span></label>
+                            <label class="role-option"><input type="radio" name="roleInput" value="All Role"><span>All Role</span></label>
+                            <label class="role-option"><input type="radio" name="roleInput" value="CEO"><span>CEO</span></label>
+                            <label class="role-option"><input type="radio" name="roleInput" value="sales"><span>sales</span></label>
+                            <label class="role-option"><input type="radio" name="roleInput" value="manager"><span>manager</span></label>
+                            <label class="role-option"><input type="radio" name="roleInput" value="accounting"><span>accounting</span></label>
+                        </div>
+                    </div>
+
+                    <div class="advanced-permissions mt-4">
+                        <button type="button" id="togglePermissions" class="toggle-btn">
+                            <span>⚙️ กำหนดสิทธิ์รายเมนู (Advanced)</span>
+                            <span class="chevron" id="chevronIcon">▼</span>
+                        </button>
                         
-                        <!-- Cat 1 -->
-                        <div class="permissions-group">
-                            <h4 class="permissions-header">รายการสั่งซื้อและผู้ซื้อ</h4>
-                            <div class="permissions-list">
-                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="รายการสั่งซื้อทั้งหมด"> <span class="checkmark"></span>รายการสั่งซื้อทั้งหมด</label>
-                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="คืนเงินหรือยกเลิกรายการ"> <span class="checkmark"></span>คืนเงินหรือยกเลิกรายการ</label>
-                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="อัตราแลกเปลี่ยน"> <span class="checkmark"></span>อัตราแลกเปลี่ยน</label>
-                            </div>
-                        </div>
-
-                        <!-- Cat 2 -->
-                        <div class="permissions-group">
-                            <h4 class="permissions-header">จัดการข้อมูลร้านค้า</h4>
-                            <div class="permissions-list">
-                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="ตั้งค่าเบื้องต้น"> <span class="checkmark"></span>ตั้งค่าเบื้องต้น</label>
-                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="ข้อมูลส่วนตัว"> <span class="checkmark"></span>ข้อมูลส่วนตัว</label>
-                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="แก้ไขข้อมูลส่วนตัว"> <span class="checkmark"></span>แก้ไขข้อมูลส่วนตัว</label>
-                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="แก้ไขข้อมูลบัญชีธนาคาร"> <span class="checkmark"></span>แก้ไขข้อมูลบัญชีธนาคาร</label>
-                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="เปลี่ยนรหัสผ่าน"> <span class="checkmark"></span>เปลี่ยนรหัสผ่าน</label>
-                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="ข้อมูลใบกำกับภาษี"> <span class="checkmark"></span>ข้อมูลใบกำกับภาษี</label>
-                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="ส่งค่ากลับเว็บไซต์หลัก"> <span class="checkmark"></span>ส่งค่ากลับเว็บไซต์หลัก</label>
-                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="จัดการเอกสาร"> <span class="checkmark"></span>จัดการเอกสาร</label>
-                            </div>
-                        </div>
-
-                        <!-- Cat 3 -->
-                        <div class="permissions-group">
-                            <h4 class="permissions-header">ลิงก์ชำระเงิน (Pay.sn)</h4>
-                            <div class="permissions-list">
-                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="ลิงก์รับชำระเงินของร้านค้า"> <span class="checkmark"></span>ลิงก์รับชำระเงินของร้านค้า</label>
-                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="ลิงก์รับชำระเงินแบบกำหนดเวลา"> <span class="checkmark"></span>ลิงก์รับชำระเงินแบบกำหนดเวลา</label>
-                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="เทคนิคการใช้งาน"> <span class="checkmark"></span>เทคนิคการใช้งาน</label>
-                            </div>
-                        </div>
-
-                        <!-- Cat 4 -->
-                        <div class="permissions-group">
-                            <h4 class="permissions-header">บริการชำระเงินอัตโนมัติ</h4>
-                            <div class="permissions-list">
-                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="สร้างรายการชำระเงินอัตโนมัติ"> <span class="checkmark"></span>สร้างรายการชำระเงินอัตโนมัติ</label>
-                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="การชำระเงินอัตโนมัติ"> <span class="checkmark"></span>การชำระเงินอัตโนมัติ</label>
-                            </div>
-                        </div>
-
-                        <!-- Gen Items 2 -->
-                        <div class="permissions-group full-width">
-                            <div class="permissions-list">
-                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="เพิ่มโลโก้ชำระเงินบนเว็บไซต์"> <span class="checkmark"></span>เพิ่มโลโก้ชำระเงินบนเว็บไซต์</label>
-                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="ข่าวสารและกิจกรรมใหม่"> <span class="checkmark"></span>ข่าวสารและกิจกรรมใหม่</label>
-                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="ดาวน์โหลดใบเสร็จ / ใบกำกับภาษี อิเล็กทรอนิกส์"> <span class="checkmark"></span>ดาวน์โหลดใบเสร็จ / ใบกำกับภาษี อิเล็กทรอนิกส์</label>
+                        <div id="permissionsWrapper" class="permissions-wrapper hidden pt-3">
+                            <div class="permissions-container" id="permissionsContainer">
+                                
                             </div>
                         </div>
                     </div>
+
+                    <div class="panel-actions mt-4" style="text-align:right;">
+                        <button type="submit" id="addToQueueBtn" class="btn-primary">+ เพิ่มลงรายการ</button>
+                    </div>
                 </div>
 
-                <div class="form-group full-width">
-                    <label for="justification">Business Justification</label>
-                    <textarea id="justification" name="justification" required placeholder="Briefly explain why you need this access..." rows="3"></textarea>
+                <!-- Staged Users List Viewer -->
+                <div id="queuedUsersList" class="queued-users-list">
+                    <!-- Queue badges injected here -->
                 </div>
-                
-                <div class="form-actions full-width">
-                    <button type="submit" class="submit-btn" id="submitBtn">
-                        <span class="btn-text">Submit Request</span>
-                        <div class="loader hidden"></div>
-                    </button>
-                    <div id="statusMessage" class="status-message"></div>
+
+                <!-- Form Footer -->
+                <div class="form-footer mt-4">
+                    <div class="queue-status">รอส่งทั้งหมด <strong id="queueCount">0</strong> รายการ</div>
+                    <div class="footer-buttons">
+                        <button type="button" id="clearBtn" class="btn-outline">ล้างทั้งหมด</button>
+                        <button type="button" id="submitAllBtn" class="btn-primary" disabled>ยืนยันทั้งหมด <span class="loader hidden" id="submitLoader"></span></button>
+                    </div>
                 </div>
+                <div id="statusMessage" class="status-message"></div>
             </form>
         </main>
 
         <!-- Dashboard / Request List Section -->
-        <aside class="glass-panel dashboard-section">
+        <aside class="glass-panel dashboard-section" style="flex: 1;">
             <header>
                 <h2>Recent Requests</h2>
                 <p>Real-time status of access requests</p>
@@ -146,15 +119,11 @@
             </header>
             
             <div class="requests-list" id="requestsList">
-                <!-- Requests will be injected here via JS -->
-                <div class="loading-state">
-                    Loading requests...
-                </div>
+                <div class="loading-state">Loading requests...</div>
             </div>
         </aside>
     </div>
 
-    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
     <script type="module" src="app.js"></script>
 </body>
 </html>
