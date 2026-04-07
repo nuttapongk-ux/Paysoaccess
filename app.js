@@ -22,7 +22,6 @@ const clearBtn = document.getElementById('clearBtn');
 const submitAllBtn = document.getElementById('submitAllBtn');
 const submitLoader = document.getElementById('submitLoader');
 const statusMessage = document.getElementById('statusMessage');
-const requestsList = document.getElementById('requestsList');
 
 const requestsCollection = collection(db, 'access_requests');
 
@@ -194,99 +193,6 @@ const sanitize = str => String(str).replace(/[&<>"']/g, match => {
     return escapeMap[match];
 });
 
-const formatDate = (timestamp) => {
-    if (!timestamp) return 'Just now';
-    const date = timestamp.toDate();
-    return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(date);
-};
-
-const renderRequests = (requests) => {
-    requestsList.innerHTML = ''; 
-
-    if (requests.length === 0) {
-        requestsList.innerHTML = `<div class="empty-state">No requests found. Create one to get started!</div>`;
-        return;
-    }
-
-    requests.forEach(req => {
-        const card = document.createElement('div');
-        card.className = 'request-card';
-
-        const usersHtml = req.users ? req.users.map(u => `
-            <div class="user-info-row" style="margin-bottom:0.75rem; padding-bottom:0.75rem; border-bottom:1px solid rgba(0,0,0,0.05);">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div class="user-info">
-                        <strong>${sanitize(u.username)}</strong>
-                        <span>${sanitize(u.email)}</span>
-                    </div>
-                    <div class="role-badge">${sanitize(u.role)}</div>
-                </div>
-                <div class="perms-badges" style="margin-top:0.4rem;">
-                    ${u.permissions && u.permissions.length > 0 ? u.permissions.map(p => `<span class="perm-badge">${sanitize(p)}</span>`).join('') : '<span class="perm-badge empty">All Defaults</span>'}
-                </div>
-            </div>
-            
-            <div class="form-group mt-4">
-                <label>บทบาท (Role)</label>
-                <div class="role-grid">
-                    <label class="role-option"><input type="radio" name="roleInput" value="Admin" required><span>Admin</span></label>
-                    <label class="role-option"><input type="radio" name="roleInput" value="IT"><span>IT</span></label>
-                    <label class="role-option"><input type="radio" name="roleInput" value="All Role"><span>All Role</span></label>
-                    <label class="role-option"><input type="radio" name="roleInput" value="CEO"><span>CEO</span></label>
-                    <label class="role-option"><input type="radio" name="roleInput" value="sales"><span>sales</span></label>
-                    <label class="role-option"><input type="radio" name="roleInput" value="manager"><span>manager</span></label>
-                    <label class="role-option"><input type="radio" name="roleInput" value="accounting"><span>accounting</span></label>
-                </div>
-            </div>
-
-            <div class="advanced-permissions mt-4">
-                <button type="button" class="toggle-btn" onclick="const wrapper = this.nextElementSibling; wrapper.classList.toggle('hidden');">
-                    <span>⚙️ กำหนดสิทธิ์รายเมนู (Advanced)</span>
-                    <span class="chevron">▼</span>
-                </button>
-                
-                <div class="permissions-wrapper hidden pt-3">
-                    <div class="permissions-container">
-                        ${dynamicMenuHtml}
-                    </div>
-                </div>
-            </div>
-        `).join('') : '';
-
-        card.innerHTML = `
-            <div class="card-header multiple-users">
-                <div class="store-info mb-2" style="font-size:0.8rem; color:#475569; padding-bottom: 0.5rem;">
-                    <strong style="color:#1e293b; font-size:0.9rem;">🏬 ${sanitize(req.storeName || 'N/A')}</strong> (ID: ${sanitize(req.storeId || 'N/A')})
-                </div>
-                <div class="users-stack">
-                    ${usersHtml}
-                </div>
-            </div>
-            <div class="card-footer">
-                <span class="req-status ${req.status.toLowerCase()}">${sanitize(req.status)}</span>
-                <span class="req-date">${formatDate(req.createdAt)}</span>
-            </div>
-        `;
-        requestsList.appendChild(card);
-    });
-};
-
-const setupRealtimeListener = () => {
-    const q = query(requestsCollection, orderBy('createdAt', 'desc'));
-    onSnapshot(q, (snapshot) => {
-        const requests = [];
-        snapshot.forEach((doc) => requests.push({ id: doc.id, ...doc.data() }));
-        renderRequests(requests);
-    }, (error) => {
-        console.error('Error fetching requests: ', error);
-        onSnapshot(requestsCollection, (fallbackSnap) => {
-           const fbReqs = [];
-           fallbackSnap.forEach((doc) => fbReqs.push({id: doc.id, ...doc.data()}));
-           renderRequests(fbReqs);
-        });
-    });
-};
-
 const initApp = () => {
     onAuthStateChanged(auth, async (user) => {
         if (!user) {
@@ -298,8 +204,6 @@ const initApp = () => {
 
             const pc = document.getElementById('permissionsContainer');
             if (pc) pc.innerHTML = dynamicMenuHtml;
-
-            setupRealtimeListener();
         }
     });
 

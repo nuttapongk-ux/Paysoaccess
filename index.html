@@ -12,7 +12,7 @@
     
     <div class="container">
         <!-- Request Form Section -->
-        <main class="glass-panel form-section" style="flex: 2;">
+        <main class="glass-panel form-section" style="width: 100%; max-width: 800px; margin: 0 auto;">
             <header>
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <div>
@@ -107,21 +107,6 @@
                 <div id="statusMessage" class="status-message"></div>
             </form>
         </main>
-
-        <!-- Dashboard / Request List Section -->
-        <aside class="glass-panel dashboard-section" style="flex: 1;">
-            <header>
-                <h2>Recent Requests</h2>
-                <p>Real-time status of access requests</p>
-                <div class="status-indicator">
-                    <span class="dot pulse"></span> Live
-                </div>
-            </header>
-            
-            <div class="requests-list" id="requestsList">
-                <div class="loading-state">Loading requests...</div>
-            </div>
-        </aside>
     </div>
 
     <script type="module" src="app.js"></script>
