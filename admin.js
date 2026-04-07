@@ -70,11 +70,18 @@ const renderAdminView = () => {
         const catCard = document.createElement('div');
         catCard.className = 'category-card';
         
+        // Migrate incoming old data strings onto object specs
+        const standardizedItems = category.items.map(i => typeof i === 'string' ? { name: i, isLocked: false } : i );
+        menuData[catIndex].items = standardizedItems; // Mutate backwards for safety
+
         // Items HTML
-        const itemsHtml = category.items.map((item, itemIndex) => `
+        const itemsHtml = standardizedItems.map((item, itemIndex) => `
             <div class="item-row">
                 <span style="color:#94a3b8;">☰</span>
-                <input type="text" class="item-input" value="${item}" data-cat="${catIndex}" data-item="${itemIndex}" placeholder="Menu Item Name">
+                <input type="text" class="item-input" value="${item.name}" data-cat="${catIndex}" data-item="${itemIndex}" placeholder="Menu Item Name">
+                <label style="font-size:0.8rem; display:flex; align-items:center; gap:0.25rem; color:#dc2626;">
+                    <input type="checkbox" class="item-lock-toggle" data-cat="${catIndex}" data-item="${itemIndex}" ${item.isLocked ? 'checked' : ''}> 🔒 Lock
+                </label>
                 <button type="button" class="btn-text-danger delete-item-btn" data-cat="${catIndex}" data-item="${itemIndex}">✕</button>
             </div>
         `).join('');
@@ -82,9 +89,9 @@ const renderAdminView = () => {
         catCard.innerHTML = `
             <div class="category-header">
                 <div style="flex:1; display:flex; gap:1rem; align-items:center;">
-                    <input type="text" class="cat-title-input" value="${category.title}" data-cat="${catIndex}" placeholder="Category Title (Leave blank for no header)" style="width: 60%; padding: 0.5rem; border-radius: 8px; border: 1px solid #cbd5e1;">
-                    <label style="font-size:0.85rem; display:flex; align-items:center; gap:0.25rem;">
-                        <input type="checkbox" class="cat-header-toggle" data-cat="${catIndex}" ${category.isHeader ? 'checked' : ''}> Show as Red Header
+                    <input type="text" class="cat-title-input" value="${category.title || ''}" data-cat="${catIndex}" placeholder="Main Menu (Leave blank for generic list without parent)" style="width: 50%; padding: 0.5rem; border-radius: 8px; border: 1px solid #cbd5e1;">
+                    <label style="font-size:0.85rem; display:flex; align-items:center; gap:0.25rem; color:#dc2626;">
+                        <input type="checkbox" class="cat-lock-toggle" data-cat="${catIndex}" ${category.isTitleLocked ? 'checked' : ''}> 🔒 Force Checked
                     </label>
                 </div>
                 <button type="button" class="btn-text-danger delete-cat-btn" data-cat="${catIndex}">Delete Category</button>
@@ -92,7 +99,7 @@ const renderAdminView = () => {
             <div class="items-container">
                 ${itemsHtml}
             </div>
-            <button type="button" class="btn-add-item" data-cat="${catIndex}">+ Add Menu Item</button>
+            <button type="button" class="btn-add-item" data-cat="${catIndex}">+ Add Sub Menu</button>
         `;
         categoriesList.appendChild(catCard);
     });
@@ -109,10 +116,10 @@ const attachEventListeners = () => {
         });
     });
 
-    document.querySelectorAll('.cat-header-toggle').forEach(input => {
+    document.querySelectorAll('.cat-lock-toggle').forEach(input => {
         input.addEventListener('change', (e) => {
             const idx = e.target.getAttribute('data-cat');
-            menuData[idx].isHeader = e.target.checked;
+            menuData[idx].isTitleLocked = e.target.checked;
         });
     });
 
@@ -120,7 +127,15 @@ const attachEventListeners = () => {
         input.addEventListener('change', (e) => {
             const cIdx = e.target.getAttribute('data-cat');
             const iIdx = e.target.getAttribute('data-item');
-            menuData[cIdx].items[iIdx] = e.target.value;
+            menuData[cIdx].items[iIdx].name = e.target.value;
+        });
+    });
+
+    document.querySelectorAll('.item-lock-toggle').forEach(input => {
+        input.addEventListener('change', (e) => {
+            const cIdx = e.target.getAttribute('data-cat');
+            const iIdx = e.target.getAttribute('data-item');
+            menuData[cIdx].items[iIdx].isLocked = e.target.checked;
         });
     });
 
@@ -156,7 +171,7 @@ addCategoryBtn.addEventListener('click', () => {
     menuData.push({
         id: genId(),
         title: 'New Category',
-        isHeader: true,
+        isTitleLocked: false,
         items: []
     });
     renderAdminView();
@@ -191,7 +206,9 @@ saveConfigBtn.addEventListener('click', async () => {
         // Filter out empty items to clean up
         const cleanedData = menuData.map(cat => ({
             ...cat,
-            items: cat.items.map(i => i.trim()).filter(i => i.length > 0)
+            items: cat.items
+                .map(i => typeof i === 'string' ? { name: i, isLocked: false } : i)
+                .filter(i => i.name && i.name.trim().length > 0)
         }));
         menuData = cleanedData; // update state
 

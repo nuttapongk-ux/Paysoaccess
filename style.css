@@ -705,6 +705,64 @@ header {
     cursor: pointer;
 }
 
+/* --- Advanced Permissions Nested Tree Styles --- */
+
+.permissions-tree {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.nested-group {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0;
+    overflow: hidden;
+}
+
+.parent-item {
+    background: #f8fafc;
+    margin: 0 !important;
+    padding: 0.75rem 1rem !important;
+    border-bottom: 1px solid #e2e8f0;
+    font-weight: 600;
+}
+
+.permissions-children {
+    padding: 1rem 1rem 1rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.child-item, .standalone-item {
+    margin: 0 !important;
+}
+
+.flat-group .standalone-item {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+}
+
+/* Locked Checkmark style */
+input:disabled ~ .checkmark {
+    background-color: #cbd5e1;
+    cursor: not-allowed;
+}
+
+input:disabled ~ .locked-checkmark {
+    background-color: #e2e8f0;
+    border-color: #cbd5e1;
+}
+
+input:disabled:checked ~ .locked-checkmark {
+    background-color: #94a3b8;
+    border-color: #94a3b8;
+}
+
 /* Footer Section */
 .form-footer {
     display: flex;

@@ -40,27 +40,97 @@ const fetchMenuConfig = async () => {
         } else {
             // Fallback default
             categories = [
-                { title: "", isHeader: false, items: ["แดชบอร์ด", "ยอดรวมรายได้", "ประวัติการโอนเงินคืน"] }
+                { title: "", items: [{name: "แดชบอร์ด", isLocked: true}, {name:"ยอดรวมรายได้", isLocked:false}] }
             ];
         }
 
-        // Build HTML
-        dynamicMenuHtml = categories.map(cat => `
-            <div class="permissions-group">
-                ${cat.isHeader && cat.title ? `<h4 class="permissions-header">${sanitize(cat.title)}</h4>` : ''}
-                <div class="permissions-list">
-                    ${cat.items.map(item => `
-                        <label class="checkbox-container"><input type="checkbox" name="permissions" value="${sanitize(item)}"> <span class="checkmark"></span>${sanitize(item)}</label>
-                    `).join('')}
-                </div>
+        // Migrate string arrays to object if necessary directly inside render loop
+        dynamicMenuHtml = `
+            <div class="permissions-actions" style="display:flex; justify-content:flex-end; gap:0.5rem; margin-bottom: 1rem;">
+                <button type="button" class="btn-text-small btn-select-all" style="color:#2563eb; background:none; border:none; cursor:pointer; font-size:0.85rem; font-weight:600;">เลือกทั้งหมด</button>
+                <button type="button" class="btn-text-small btn-clear-all" style="color:#64748b; background:#f1f5f9; border:none; cursor:pointer; font-size:0.85rem; font-weight:600; padding: 0.25rem 0.75rem; border-radius:12px;">ล้าง</button>
             </div>
-        `).join('');
+            <div class="permissions-tree">
+        `;
+
+        dynamicMenuHtml += categories.map((cat, catIdx) => {
+            const hasTitle = cat.title && cat.title.trim() !== '';
+            
+            // Build items
+            const itemsHtml = cat.items.map(item => {
+                const iObj = typeof item === 'string' ? { name: item, isLocked: false } : item;
+                const lockedHtml = iObj.isLocked ? `checked disabled` : ``;
+                const iconHtml = iObj.isLocked ? ` <span style="color:#10b981; font-size:0.75rem;">🛡️</span>` : ``;
+                return `
+                    <label class="checkbox-container ${hasTitle ? 'child-item' : 'standalone-item'}">
+                        <input type="checkbox" name="permissions" class="${hasTitle ? 'child-checkbox' : 'standalone-checkbox'}" value="${sanitize(iObj.name)}" ${lockedHtml}> 
+                        <span class="checkmark 
+                        ${iObj.isLocked ? 'locked-checkmark' : ''}"></span>${sanitize(iObj.name)}${iconHtml}
+                    </label>
+                `;
+            }).join('');
+
+            if (hasTitle) {
+                const lockedParentHtml = cat.isTitleLocked ? `checked disabled` : ``;
+                const pIconHtml = cat.isTitleLocked ? ` <span style="color:#10b981; font-size:0.75rem;">🛡️</span>` : ``;
+                return `
+                    <div class="permissions-group nested-group" style="margin-bottom: 1rem; border: 1px solid #f1f5f9; border-radius: 8px; padding: 1rem;">
+                        <label class="checkbox-container parent-item" style="font-weight: 600; font-size: 0.95rem; color: #1e293b; margin-bottom: 0.5rem;">
+                            <input type="checkbox" name="permissions" class="parent-checkbox" value="${sanitize(cat.title)}" ${lockedParentHtml}>
+                            <span class="checkmark ${cat.isTitleLocked ? 'locked-checkmark' : ''}"></span>${sanitize(cat.title)}${pIconHtml}
+                        </label>
+                        <div class="permissions-children" style="margin-left: 2rem;">
+                            ${itemsHtml}
+                        </div>
+                    </div>
+                `;
+            } else {
+                return `<div class="permissions-group flat-group" style="margin-bottom:0.5rem;">${itemsHtml}</div>`;
+            }
+        }).join('');
+
+        dynamicMenuHtml += `</div>`;
 
     } catch (e) {
         console.error('Failed to load menu config', e);
         dynamicMenuHtml = '<div class="error">Failed to load permissions. Contact support.</div>';
     }
 };
+
+// Event Delegation for Permission Trees
+document.addEventListener('change', (e) => {
+    if(e.target.classList.contains('parent-checkbox')) {
+        const parentDiv = e.target.closest('.permissions-group');
+        const children = parentDiv.querySelectorAll('.child-checkbox:not(:disabled)');
+        children.forEach(c => c.checked = e.target.checked);
+    }
+    else if(e.target.classList.contains('child-checkbox')) {
+        const parentDiv = e.target.closest('.permissions-group');
+        const parentCb = parentDiv.querySelector('.parent-checkbox');
+        if (parentCb && !parentCb.disabled) {
+            const children = parentDiv.querySelectorAll('.child-checkbox');
+            const allChecked = Array.from(children).every(c => c.checked);
+            const someChecked = Array.from(children).some(c => c.checked);
+            
+            parentCb.checked = allChecked;
+            parentCb.indeterminate = someChecked && !allChecked;
+        }
+    }
+});
+
+document.addEventListener('click', (e) => {
+    if(e.target.classList.contains('btn-select-all')) {
+        const wrapper = e.target.closest('.permissions-wrapper');
+        if(wrapper) wrapper.querySelectorAll('input[type="checkbox"]:not(:disabled)').forEach(c => c.checked = true);
+    }
+    if(e.target.classList.contains('btn-clear-all')) {
+        const wrapper = e.target.closest('.permissions-wrapper');
+        if(wrapper) {
+            wrapper.querySelectorAll('input[type="checkbox"]:not(:disabled)').forEach(c => c.checked = false);
+            wrapper.querySelectorAll('.parent-checkbox').forEach(c => c.indeterminate = false);
+        }
+    }
+});
 
 // State
 let queuedUsers = [];
@@ -122,8 +192,9 @@ form.addEventListener('submit', (e) => {
     let selectedRole = null;
     userRoleInputs.forEach(r => { if(r.checked) selectedRole = r.value; });
 
-    const userPermInputs = parentEntry.querySelectorAll('input[name="permissions"]');
-    const selectedPerms = Array.from(userPermInputs).filter(p => p.checked).map(p => p.value);
+    const userPermInputs = parentEntry.querySelectorAll('input[name="permissions"]:checked');
+    // For disabled checked inputs, we ALSO want to submit them. :checked covers both disabled and enabled.
+    const selectedPerms = Array.from(userPermInputs).map(p => p.value);
 
     if(!usernameInput.value || !emailInput.value || !selectedRole) return;
 
