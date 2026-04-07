@@ -34,7 +34,7 @@
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'aktiv-grotesk-thai', 'Prompt', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     color: var(--text-primary);
     min-height: 100vh;
     display: flex;
@@ -724,7 +724,7 @@ header {
 .parent-item {
     background: #f8fafc;
     margin: 0 !important;
-    padding: 0.75rem 1rem 0.75rem 2.8rem !important;
+    padding: 1rem 1rem 1rem 3rem !important; /* Ensure checkmark room */
     border-bottom: 1px solid #e2e8f0;
     font-weight: 600;
 }
@@ -734,10 +734,11 @@ header {
 }
 
 .permissions-children {
-    padding: 1rem 1rem 1rem 1rem;
+    padding: 1rem;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.85rem;
+    background: #ffffff;
 }
 
 .child-item, .standalone-item {
@@ -745,14 +746,18 @@ header {
 }
 
 .child-item {
-    padding-left: 28px !important;
+    padding-left: 3rem !important; /* Force text away from checkmark */
+}
+
+.child-item .checkmark {
+    left: 1rem !important; /* Adjust checkmark inward */
 }
 
 .flat-group .standalone-item {
-    background: #f8fafc;
+    background: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 8px;
-    padding: 0.75rem 1rem 0.75rem 2.8rem !important;
+    padding: 1rem 1rem 1rem 3rem !important;
 }
 
 .flat-group .standalone-item .checkmark {
