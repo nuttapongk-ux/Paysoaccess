@@ -838,3 +838,51 @@ input:disabled:checked ~ .locked-checkmark {
     font-size: 1rem;
 }
 
+/* === Advanced Permissions Block Formatting === */
+.advanced-permissions {
+    margin-top: 1.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    background: #ffffff;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+
+.advanced-permissions .toggle-btn {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    border: none;
+    padding: 1.25rem 1.5rem;
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 1.05rem;
+    cursor: pointer;
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.advanced-permissions .toggle-btn:hover {
+    background: #f8fafc;
+}
+
+/* Optional: if you want a border between button and content when open */
+.advanced-permissions .toggle-btn.open {
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.advanced-permissions .permissions-wrapper {
+    background: #ffffff;
+    padding: 1.5rem;
+    border-top: 1px dashed #e2e8f0;
+}
+
+.chevron {
+    transition: transform 0.3s ease;
+}
+
+.chevron.open {
+    transform: rotate(180deg);
+}
+
