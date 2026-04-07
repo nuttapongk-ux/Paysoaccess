@@ -59,9 +59,9 @@ const fetchMenuConfig = async () => {
                 const iconHtml = iObj.isLocked ? ` <span style="color:#10b981; font-size:0.75rem;">🛡️</span>` : ``;
                 return `
                     <label class="checkbox-container ${hasTitle ? 'child-item' : 'standalone-item'}">
-                        <input type="checkbox" name="permissions" class="${hasTitle ? 'child-checkbox' : 'standalone-checkbox'}" value="${sanitize(iObj.name)}" ${lockedHtml}> 
-                        <span class="checkmark 
-                        ${iObj.isLocked ? 'locked-checkmark' : ''}"></span>${sanitize(iObj.name)}${iconHtml}
+                        <input type="checkbox" name="permissions" class="${hasTitle ? 'child-checkbox' : 'standalone-checkbox'}" value="${sanitize(iObj.name)}" ${lockedHtml} style="position:absolute; left:0; top:0; width:0; height:0; opacity:0;"> 
+                        <span class="checkmark ${iObj.isLocked ? 'locked-checkmark' : ''}"></span>
+                        <span class="tree-text">${sanitize(iObj.name)}${iconHtml}</span>
                     </label>
                 `;
             }).join('');
@@ -70,18 +70,19 @@ const fetchMenuConfig = async () => {
                 const lockedParentHtml = cat.isTitleLocked ? `checked disabled` : ``;
                 const pIconHtml = cat.isTitleLocked ? ` <span style="color:#10b981; font-size:0.75rem;">🛡️</span>` : ``;
                 return `
-                    <div class="permissions-group nested-group" style="margin-bottom: 1rem; border: 1px solid #f1f5f9; border-radius: 8px; padding: 1rem;">
-                        <label class="checkbox-container parent-item" style="font-weight: 600; font-size: 0.95rem; color: #1e293b; margin-bottom: 0.5rem;">
-                            <input type="checkbox" name="permissions" class="parent-checkbox" value="${sanitize(cat.title)}" ${lockedParentHtml}>
-                            <span class="checkmark ${cat.isTitleLocked ? 'locked-checkmark' : ''}"></span>${sanitize(cat.title)}${pIconHtml}
+                    <div class="permissions-group nested-group">
+                        <label class="checkbox-container parent-item">
+                            <input type="checkbox" name="permissions" class="parent-checkbox" value="${sanitize(cat.title)}" ${lockedParentHtml} style="position:absolute; left:0; top:0; width:0; height:0; opacity:0;">
+                            <span class="checkmark ${cat.isTitleLocked ? 'locked-checkmark' : ''}"></span>
+                            <span class="tree-text">${sanitize(cat.title)}${pIconHtml}</span>
                         </label>
-                        <div class="permissions-children" style="margin-left: 2rem;">
+                        <div class="permissions-children">
                             ${itemsHtml}
                         </div>
                     </div>
                 `;
             } else {
-                return `<div class="permissions-group flat-group" style="margin-bottom:0.5rem;">${itemsHtml}</div>`;
+                return `<div class="permissions-group flat-group">${itemsHtml}</div>`;
             }
         }).join('');
 
