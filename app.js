@@ -45,6 +45,7 @@ form.addEventListener('submit', async (e) => {
         department: form.department.value.trim(),
         requestedRole: form.requestedRole.value,
         justification: form.justification.value.trim(),
+        permissions: Array.from(form.querySelectorAll('input[name="permissions"]:checked')).map(el => el.value),
         status: 'Pending', // Default status
         createdAt: serverTimestamp()
     };
@@ -102,6 +103,9 @@ const renderRequests = (requests) => {
             </div>
             <div class="card-body">
                 <p>"${sanitize(req.justification)}"</p>
+                <div class="perms-badges">
+                    ${req.permissions && req.permissions.length > 0 ? req.permissions.map(p => `<span class="perm-badge">${sanitize(p)}</span>`).join('') : '<span class="perm-badge empty">No specific menus</span>'}
+                </div>
             </div>
             <div class="card-footer">
                 <span class="req-status ${req.status.toLowerCase()}">${sanitize(req.status)}</span>

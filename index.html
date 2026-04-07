@@ -54,6 +54,73 @@
                 </div>
                 
                 <div class="form-group full-width">
+                    <label>Menu Permissions</label>
+                    <div class="permissions-container" id="permissionsContainer">
+                        <!-- Gen Items -->
+                        <div class="permissions-group">
+                            <div class="permissions-list">
+                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="แดชบอร์ด"> <span class="checkmark"></span>แดชบอร์ด</label>
+                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="ยอดรวมรายได้"> <span class="checkmark"></span>ยอดรวมรายได้</label>
+                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="ประวัติการโอนเงินคืน"> <span class="checkmark"></span>ประวัติการโอนเงินคืน</label>
+                            </div>
+                        </div>
+                        
+                        <!-- Cat 1 -->
+                        <div class="permissions-group">
+                            <h4 class="permissions-header">รายการสั่งซื้อและผู้ซื้อ</h4>
+                            <div class="permissions-list">
+                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="รายการสั่งซื้อทั้งหมด"> <span class="checkmark"></span>รายการสั่งซื้อทั้งหมด</label>
+                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="คืนเงินหรือยกเลิกรายการ"> <span class="checkmark"></span>คืนเงินหรือยกเลิกรายการ</label>
+                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="อัตราแลกเปลี่ยน"> <span class="checkmark"></span>อัตราแลกเปลี่ยน</label>
+                            </div>
+                        </div>
+
+                        <!-- Cat 2 -->
+                        <div class="permissions-group">
+                            <h4 class="permissions-header">จัดการข้อมูลร้านค้า</h4>
+                            <div class="permissions-list">
+                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="ตั้งค่าเบื้องต้น"> <span class="checkmark"></span>ตั้งค่าเบื้องต้น</label>
+                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="ข้อมูลส่วนตัว"> <span class="checkmark"></span>ข้อมูลส่วนตัว</label>
+                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="แก้ไขข้อมูลส่วนตัว"> <span class="checkmark"></span>แก้ไขข้อมูลส่วนตัว</label>
+                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="แก้ไขข้อมูลบัญชีธนาคาร"> <span class="checkmark"></span>แก้ไขข้อมูลบัญชีธนาคาร</label>
+                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="เปลี่ยนรหัสผ่าน"> <span class="checkmark"></span>เปลี่ยนรหัสผ่าน</label>
+                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="ข้อมูลใบกำกับภาษี"> <span class="checkmark"></span>ข้อมูลใบกำกับภาษี</label>
+                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="ส่งค่ากลับเว็บไซต์หลัก"> <span class="checkmark"></span>ส่งค่ากลับเว็บไซต์หลัก</label>
+                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="จัดการเอกสาร"> <span class="checkmark"></span>จัดการเอกสาร</label>
+                            </div>
+                        </div>
+
+                        <!-- Cat 3 -->
+                        <div class="permissions-group">
+                            <h4 class="permissions-header">ลิงก์ชำระเงิน (Pay.sn)</h4>
+                            <div class="permissions-list">
+                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="ลิงก์รับชำระเงินของร้านค้า"> <span class="checkmark"></span>ลิงก์รับชำระเงินของร้านค้า</label>
+                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="ลิงก์รับชำระเงินแบบกำหนดเวลา"> <span class="checkmark"></span>ลิงก์รับชำระเงินแบบกำหนดเวลา</label>
+                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="เทคนิคการใช้งาน"> <span class="checkmark"></span>เทคนิคการใช้งาน</label>
+                            </div>
+                        </div>
+
+                        <!-- Cat 4 -->
+                        <div class="permissions-group">
+                            <h4 class="permissions-header">บริการชำระเงินอัตโนมัติ</h4>
+                            <div class="permissions-list">
+                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="สร้างรายการชำระเงินอัตโนมัติ"> <span class="checkmark"></span>สร้างรายการชำระเงินอัตโนมัติ</label>
+                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="การชำระเงินอัตโนมัติ"> <span class="checkmark"></span>การชำระเงินอัตโนมัติ</label>
+                            </div>
+                        </div>
+
+                        <!-- Gen Items 2 -->
+                        <div class="permissions-group full-width">
+                            <div class="permissions-list">
+                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="เพิ่มโลโก้ชำระเงินบนเว็บไซต์"> <span class="checkmark"></span>เพิ่มโลโก้ชำระเงินบนเว็บไซต์</label>
+                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="ข่าวสารและกิจกรรมใหม่"> <span class="checkmark"></span>ข่าวสารและกิจกรรมใหม่</label>
+                                <label class="checkbox-container"><input type="checkbox" name="permissions" value="ดาวน์โหลดใบเสร็จ / ใบกำกับภาษี อิเล็กทรอนิกส์"> <span class="checkmark"></span>ดาวน์โหลดใบเสร็จ / ใบกำกับภาษี อิเล็กทรอนิกส์</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
                     <label for="justification">Business Justification</label>
                     <textarea id="justification" name="justification" required placeholder="Briefly explain why you need this access..." rows="3"></textarea>
                 </div>
