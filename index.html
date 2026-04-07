@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merchant Control Access Request</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-animation"></div>
+    
+    <div class="container">
+        <!-- Request Form Section -->
+        <main class="glass-panel form-section">
+            <header>
+                <h1>Request Access</h1>
+                <p>Submit your details to request user and role access for Merchant Control.</p>
+            </header>
+            
+            <form id="accessRequestForm" class="request-form">
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" name="firstName" required placeholder="Enter your first name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" id="lastName" name="lastName" required placeholder="Enter your last name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required placeholder="your.email@example.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="department">Department</label>
+                    <input type="text" id="department" name="department" required placeholder="IT, Finance, etc.">
+                </div>
+                
+                <div class="form-group">
+                    <label for="requestedRole">Requested Role</label>
+                    <div class="select-wrapper">
+                        <select id="requestedRole" name="requestedRole" required>
+                            <option value="" disabled selected>Select a role...</option>
+                            <option value="Admin">Admin</option>
+                            <option value="Editor">Editor</option>
+                            <option value="Viewer">Viewer</option>
+                            <option value="Operator">Operator</option>
+                            <option value="Support">Support</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group full-width">
+                    <label for="justification">Business Justification</label>
+                    <textarea id="justification" name="justification" required placeholder="Briefly explain why you need this access..." rows="3"></textarea>
+                </div>
+                
+                <div class="form-actions full-width">
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <span class="btn-text">Submit Request</span>
+                        <div class="loader hidden"></div>
+                    </button>
+                    <div id="statusMessage" class="status-message"></div>
+                </div>
+            </form>
+        </main>
+
+        <!-- Dashboard / Request List Section -->
+        <aside class="glass-panel dashboard-section">
+            <header>
+                <h2>Recent Requests</h2>
+                <p>Real-time status of access requests</p>
+                <div class="status-indicator">
+                    <span class="dot pulse"></span> Live
+                </div>
+            </header>
+            
+            <div class="requests-list" id="requestsList">
+                <!-- Requests will be injected here via JS -->
+                <div class="loading-state">
+                    Loading requests...
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+    <script type="module" src="app.js"></script>
+</body>
+</html>
