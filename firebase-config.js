@@ -1,8 +1,8 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+// Firebase Configuration
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, setPersistence, inMemoryPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyBp6fLBaT9QlTdLwkeZi33rTaDtKdXed-o",
   authDomain: "reborn-9e91c.firebaseapp.com",
@@ -13,11 +13,7 @@ const firebaseConfig = {
   measurementId: "G-T7MW1Q9X2P"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-
-// Initialize Cloud Firestore and Auth
-const db = getFirestore(app);
-const auth = getAuth(app);
-
-export { db, auth };
+export const db = getFirestore(app);
+export const auth = getAuth(app);
+setPersistence(auth, inMemoryPersistence);

@@ -1,115 +1,226 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Merchant Control Access Request</title>
-    <link rel="stylesheet" href="https://use.typekit.net/get6zlj.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=4">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Merchant Control – คำขอสร้าง User & Role</title>
+  <meta name="description" content="ระบบคำขอสร้างผู้ใช้งานและกำหนดสิทธิ์การเข้าถึง Merchant Control" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div class="background-animation"></div>
+
+<!-- ══ SIDEBAR ═══════════════════════════════════════════════ -->
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">🏪</div>
+    <span>Merchant<br>Control</span>
+  </div>
+
+  <div class="sidebar-section-title">เมนูหลัก</div>
+  <div class="sidebar-nav">
+    <a class="nav-item active" data-tab="create">
+      <span class="nav-icon">➕</span> เพิ่มผู้ใช้งาน (Batch)
+    </a>
+    <a class="nav-item restricted-tab" data-tab="history" style="display:none;">
+      <span class="nav-icon">📋</span> ประวัติคำขอ
+    </a>
+    <a class="nav-item restricted-tab" data-tab="admin" style="display:none;">
+      <span class="nav-icon">⚙️</span> จัดการเมนู (Admin)
+    </a>
+  </div>
+
+  <div class="sidebar-bottom">
+    <div class="user-info" id="sidebar-user-info" style="cursor:pointer;" title="คลิกเพื่อเข้าสู่ระบบ Admin">
+      <div class="user-avatar">👤</div>
+      <div>
+        <div class="user-name" id="display-user-name">Guest (ผู้เข้าชม)</div>
+        <div class="user-role" id="display-user-role">คลิกเพื่อเข้าสู่ระบบ</div>
+      </div>
+    </div>
+    <button id="btn-logout" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='#fff5f5'" style="display:none; width:100%; margin-top:12px; padding:10px; border:1px solid #fecaca; background:#fff5f5; color:#e53e3e; border-radius:8px; cursor:pointer; font-weight:700; font-size:0.85rem; transition:0.2s;">
+      🚪 ออกจากระบบ (Logout)
+    </button>
+  </div>
+</nav>
+
+<!-- ══ MAIN CONTENT ═══════════════════════════════════════════ -->
+<div id="main-content">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <h1 id="topbar-title">สร้างผู้ใช้งานใหม่ (Create Users)</h1>
+    <div class="tab-group">
+      <button class="tab-btn active" data-tab="create">➕ เพิ่มผู้ใช้</button>
+      <button class="tab-btn restricted-tab" data-tab="history" style="display:none;">📋 ประวัติคำขอ</button>
+      <button class="tab-btn restricted-tab" data-tab="admin" style="display:none;">⚙️ Admin</button>
+    </div>
+  </div>
+
+  <!-- ══ CREATE TAB ══════════════════════════════════════════ -->
+  <div class="page-section active" id="tab-create">
     
-    <div class="container">
-        <!-- Request Form Section -->
-        <main class="glass-panel form-section" style="width: 100%; max-width: 800px; margin: 0 auto;">
-            <header>
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <h1 style="color: #1e293b; font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">Request Access</h1>
-                        <p style="color: #64748b; font-size: 0.95rem;">Submit your details to request Merchant Control access.</p>
-                    </div>
-                    <div style="display:flex; gap:1rem; align-items:center;">
-                        <a href="admin.html" class="btn-outline" style="text-decoration:none;">⚙️ Admin</a>
-                        <button type="button" id="logoutBtn" class="btn-outline">Logout</button>
-                    </div>
-                </div>
-            </header>
-            
-            <form id="accessRequestForm" class="request-form" style="display:block;">
-                <!-- Store Info -->
-                <div class="glass-panel-inner global-section" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem;">
-                    <h3 class="section-title" style="margin-bottom: 1.5rem; color: #1e293b; font-size: 1.1rem; border-bottom: none; padding-bottom: 0;">🏬 ข้อมูลร้านค้า (ใช้ร่วมกัน)</h3>
-                    <div style="display: flex; flex-direction: column; gap: 1.25rem;">
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label style="margin-bottom: 0.6rem; display: block; color: #475569; font-weight: 500; font-size: 0.95rem;">รหัสร้านค้า (ID)</label>
-                            <input type="text" id="storeId" required placeholder="ระบุตัวเลข (สูงสุด 5 หลัก)" maxlength="5" style="border: 1px solid #cbd5e1; border-radius: 10px; padding: 0.85rem 1rem; box-shadow: 0 1px 2px rgba(0,0,0,0.02); width: 100%;">
-                        </div>
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label style="margin-bottom: 0.6rem; display: block; color: #475569; font-weight: 500; font-size: 0.95rem;">ชื่อร้านค้า</label>
-                            <input type="text" id="storeName" required placeholder="ระบุชื่อร้านค้า" style="border: 1px solid #cbd5e1; border-radius: 10px; padding: 0.85rem 1rem; box-shadow: 0 1px 2px rgba(0,0,0,0.02); width: 100%;">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- User Entry Panel -->
-                <div class="user-entry-panel">
-                    <div class="panel-header">
-                        <h4 class="user-entry-title">👤 เพิ่มผู้ใช้งานคนที่ <span id="currentUserIndex">1</span></h4>
-                        <button type="button" class="btn-import">📄 Import CSV</button>
-                    </div>
-                    
-                    <div class="inner-grid mt-4">
-                        <div class="form-group">
-                            <label>Username</label>
-                            <input type="text" id="usernameInput" placeholder="ระบุ Username" required>
-                        </div>
-                        <div class="form-group">
-                            <label>อีเมล</label>
-                            <input type="email" id="emailInput" placeholder="email@ex.com" required>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group mt-4">
-                        <label>บทบาท (Role)</label>
-                        <div class="role-grid">
-                            <label class="role-option"><input type="radio" name="roleInput" value="Admin" required><span>Admin</span></label>
-                            <label class="role-option"><input type="radio" name="roleInput" value="IT"><span>IT</span></label>
-                            <label class="role-option"><input type="radio" name="roleInput" value="All Role"><span>All Role</span></label>
-                            <label class="role-option"><input type="radio" name="roleInput" value="CEO"><span>CEO</span></label>
-                            <label class="role-option"><input type="radio" name="roleInput" value="sales"><span>sales</span></label>
-                            <label class="role-option"><input type="radio" name="roleInput" value="manager"><span>manager</span></label>
-                            <label class="role-option"><input type="radio" name="roleInput" value="accounting"><span>accounting</span></label>
-                        </div>
-                    </div>
-
-                    <div class="advanced-permissions mt-4">
-                        <button type="button" id="togglePermissions" class="toggle-btn">
-                            <span>⚙️ กำหนดสิทธิ์รายเมนู (Advanced)</span>
-                            <span class="chevron" id="chevronIcon">▼</span>
-                        </button>
-                        
-                        <div id="permissionsWrapper" class="permissions-wrapper hidden pt-3">
-                            <div class="permissions-container" id="permissionsContainer">
-                                
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="panel-actions mt-4" style="text-align:right;">
-                        <button type="submit" id="addToQueueBtn" class="btn-primary">+ เพิ่มลงรายการ</button>
-                    </div>
-                </div>
-
-                <!-- Staged Users List Viewer -->
-                <div id="queuedUsersList" class="queued-users-list">
-                    <!-- Queue badges injected here -->
-                </div>
-
-                <!-- Form Footer -->
-                <div class="form-footer mt-4">
-                    <div class="queue-status">รอส่งทั้งหมด <strong id="queueCount">0</strong> รายการ</div>
-                    <div class="footer-buttons">
-                        <button type="button" id="clearBtn" class="btn-outline">ล้างทั้งหมด</button>
-                        <button type="button" id="submitAllBtn" class="btn-primary" disabled>ยืนยันทั้งหมด <span class="loader hidden" id="submitLoader"></span></button>
-                    </div>
-                </div>
-                <div id="statusMessage" class="status-message"></div>
-            </form>
-        </main>
+    <!-- Merchant Info Card -->
+    <div class="form-card">
+      <div class="form-card-header">
+        <span class="card-icon">🏪</span> ข้อมูลร้านค้า (ใช้ร่วมกัน)
+      </div>
+      <div class="form-card-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">รหัสร้านค้า (ID)</label>
+            <input type="text" class="form-input" id="merchant-id" placeholder="M-xxxxxx" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">ชื่อร้านค้า</label>
+            <input type="text" class="form-input" id="merchant-name" placeholder="ระบุชื่อร้านค้า" />
+          </div>
+        </div>
+      </div>
     </div>
 
-    <script type="module" src="app.js"></script>
+    <!-- Users Container -->
+    <div id="users-container"></div>
+
+    <!-- Add User Button -->
+    <button class="btn-add-user" id="btn-add-user">
+      <span>➕</span> เพิ่มผู้ใช้งานอีกคน
+    </button>
+
+    <!-- Submit Actions -->
+    <div class="form-card">
+      <div class="form-card-body">
+        <div class="form-actions">
+          <button class="btn-reset" id="btn-reset-form">🔄 รีเซ็ตทั้งหมด</button>
+          <button class="btn-submit" id="btn-submit-form">
+            <span id="submit-text">📤 ส่งคำขอ</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ HISTORY TAB ═════════════════════════════════════════ -->
+  <div class="page-section" id="tab-history">
+    <div class="history-controls">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-input" placeholder="ค้นหาชื่อ, อีเมล, รหัสร้านค้า..." />
+      </div>
+      <select class="filter-select" id="filter-status">
+        <option value="">สถานะทั้งหมด</option>
+        <option value="pending">รออนุมัติ</option>
+        <option value="approved">อนุมัติแล้ว</option>
+        <option value="rejected">ปฏิเสธ</option>
+      </select>
+      <button id="btn-export-csv" style="padding:10px 16px;background:#10b981;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;margin-left:auto;transition:all 0.2s;display:flex;align-items:center;gap:6px;" onmouseover="this.style.filter='brightness(1.1)'" onmouseout="this.style.filter=''">
+        <span>📥</span> Export CSV
+      </button>
+    </div>
+    <div id="history-list"></div>
+  </div>
+
+  <!-- ══ ADMIN TAB ═══════════════════════════════════════════ -->
+  <div class="page-section" id="tab-admin">
+    <div class="form-page-title">⚙️ จัดการเมนู & สิทธิ์</div>
+    <div class="admin-grid">
+      <!-- Categories -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <h3>📂 หมวดหมู่เมนู</h3>
+          <button class="btn-icon-add" id="btn-add-category">+ เพิ่ม</button>
+        </div>
+        <div class="admin-card-body">
+          <ul class="menu-item-list" id="category-list"></ul>
+          <div class="inline-add" id="inline-add-category" style="display:none">
+            <input type="text" id="new-category-name" placeholder="ชื่อหมวดหมู่ใหม่" />
+            <input type="text" id="new-category-ruleId" placeholder="Role/Rule ID *" style="flex:0.6" />
+            <button id="confirm-add-category">✓</button>
+          </div>
+        </div>
+      </div>
+      <!-- Menu Items -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <h3>📄 รายการสิทธิ์ (Menu Items)</h3>
+          <button class="btn-icon-add" id="btn-add-menu-item">+ เพิ่ม</button>
+        </div>
+        <div class="admin-card-body">
+          <ul class="menu-item-list" id="menu-items-list"></ul>
+          <div class="inline-add" id="inline-add-menu" style="display:none">
+            <input type="text" id="new-menu-item-name" placeholder="ชื่อรายการ" />
+            <input type="text" id="new-menu-item-ruleId" placeholder="Role/Rule ID *" style="flex:0.6" />
+            <button id="confirm-add-menu-item">✓</button>
+          </div>
+        </div>
+      </div>
+      <!-- Roles & Presets -->
+      <div class="admin-card" style="grid-column: 1 / -1;">
+        <div class="admin-card-header">
+          <h3>👑 บทบาทและสิทธิ์ตั้งต้น (Role Presets)</h3>
+          <button class="btn-icon-add" id="btn-add-role">+ เพิ่มบทบาท</button>
+        </div>
+        <div class="admin-card-body">
+          <ul class="menu-item-list" id="role-list"></ul>
+          <!-- Role Editor Modal (inline) -->
+          <div id="role-preset-editor" style="display:none;margin-top:20px;padding:16px;border:1px solid #d4def7;border-radius:8px;background:#f8faff;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
+              <h4 id="editing-role-title" style="margin:0;color:#1c2552;">แก้ไขสิทธิ์ของ: Admin</h4>
+              <button id="close-role-editor" style="background:none;border:none;cursor:pointer;font-size:1.2rem;color:#a0abc0;">✕</button>
+            </div>
+            <div class="perm-toolbar">
+               <button type="button" class="perm-btn" id="preset-select-all">เลือกทั้งหมด</button>
+               <button type="button" class="perm-btn" id="preset-clear-all">ล้าง</button>
+            </div>
+            <ul class="perm-tree" id="preset-perm-tree"></ul>
+            <div style="display:flex;gap:8px;margin-top:16px;">
+               <button id="save-role-preset" style="padding:8px 16px;background:#3c63e2;color:#fff;border:none;border-radius:6px;cursor:pointer;">💾 บันทึกสิทธิ์ตั้งต้น</button>
+               <button id="delete-role-btn" style="padding:8px 16px;background:#ffe5e5;color:#e53e3e;border:1px solid #fcbcbc;border-radius:6px;cursor:pointer;">🗑️ ลบบทบาทนี้</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Admin Login Modal (Firebase Auth) -->
+<div id="admin-login-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,12,38,0.4);backdrop-filter:blur(3px);z-index:10000;align-items:center;justify-content:center;">
+  <div style="background:#fff;padding:28px 32px;border-radius:12px;width:340px;box-shadow:0 12px 30px rgba(0,0,0,0.15);border:1px solid rgba(255,255,255,0.7);">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+      <span style="font-size:1.5rem">🔐</span>
+      <h3 style="margin:0;font-size:1.15rem;color:#1c2552;">เข้าสู่ระบบ Admin</h3>
+    </div>
+    
+    <label style="display:block;margin-bottom:6px;font-size:0.85rem;color:#6b7ab4;font-weight:500;">อีเมล</label>
+    <input type="email" id="login-email" placeholder="admin@merchant.com" style="width:100%;padding:12px;border:1.5px solid #d4def7;border-radius:8px;margin-bottom:16px;font-size:0.95rem;font-family:inherit;outline:none;" onfocus="this.style.borderColor='#3c63e2'" onblur="this.style.borderColor='#d4def7'" />
+    
+    <label style="display:block;margin-bottom:6px;font-size:0.85rem;color:#6b7ab4;font-weight:500;">รหัสผ่าน</label>
+    <input type="password" id="login-password" placeholder="••••••••" style="width:100%;padding:12px;border:1.5px solid #d4def7;border-radius:8px;margin-bottom:24px;font-size:0.95rem;font-family:inherit;outline:none;" onfocus="this.style.borderColor='#3c63e2'" onblur="this.style.borderColor='#d4def7'" />
+    
+    <div style="display:flex;justify-content:flex-end;gap:12px;">
+      <button id="login-cancel" style="padding:10px 18px;background:#f0f4ff;color:#6b7ab4;font-weight:600;border:none;border-radius:8px;cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.background='#e2eafe'" onmouseout="this.style.background='#f0f4ff'">ยกเลิก</button>
+      <button id="login-confirm" style="padding:10px 18px;background:#3c63e2;color:#fff;font-weight:600;border:none;border-radius:8px;cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.filter='brightness(1.1)'" onmouseout="this.style.filter=''">เข้าสู่ระบบ</button>
+    </div>
+  </div>
+</div>
+
+<!-- Custom Prompt Modal -->
+<div id="custom-prompt-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,12,38,0.4);backdrop-filter:blur(3px);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:#fff;padding:24px 28px;border-radius:12px;width:340px;box-shadow:0 12px 30px rgba(0,0,0,0.15);border:1px solid rgba(255,255,255,0.7);">
+    <h3 id="c-prompt-title" style="margin-top:0;font-size:1.05rem;color:#1c2552;margin-bottom:14px;line-height:1.4;"></h3>
+    <input type="text" id="c-prompt-input" style="width:100%;padding:10px 12px;border:1.5px solid #d4def7;border-radius:8px;margin-bottom:20px;font-size:0.95rem;font-family:inherit;outline:none;" onfocus="this.style.borderColor='#3c63e2'" onblur="this.style.borderColor='#d4def7'"/>
+    <div style="display:flex;justify-content:flex-end;gap:12px;">
+      <button id="c-prompt-cancel" style="padding:8px 18px;background:#f0f4ff;color:#6b7ab4;font-weight:600;border:none;border-radius:8px;cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.background='#e2eafe'" onmouseout="this.style.background='#f0f4ff'">ยกเลิก</button>
+      <button id="c-prompt-confirm" style="padding:8px 18px;background:#3c63e2;color:#fff;font-weight:600;border:none;border-radius:8px;cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.filter='brightness(1.1)'" onmouseout="this.style.filter=''">บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toast-container"></div>
+
+<script type="module" src="app.js"></script>
 </body>
 </html>
