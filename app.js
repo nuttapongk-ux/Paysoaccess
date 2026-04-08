@@ -336,6 +336,7 @@ async function loadMenuFromFirebase() {
       firebaseReady = true;
       renderCategoryList();
       refreshAllPermissionTrees();
+      refreshAllRoleButtons();
       renderRoleAdminList();
     } else {
       // Save defaults to Firebase
@@ -369,6 +370,7 @@ async function loadMenuFromFirebase() {
         }
         renderCategoryList();
         refreshAllPermissionTrees();
+        refreshAllRoleButtons();
         renderRoleAdminList();
       }
     });
@@ -1151,6 +1153,54 @@ function refreshAllPermissionTrees() {
     if (!panel) return;
     panel.querySelector('.perm-tree').innerHTML = buildPermissionTreeHTML();
     wirePermissionCheckboxes(block);
+  });
+}
+
+// Re-renders role buttons in all existing user-entry blocks after ROLES loads from Firebase
+function refreshAllRoleButtons() {
+  document.querySelectorAll('.user-entry-block').forEach(block => {
+    const roleGrid = block.querySelector('.role-grid');
+    if (!roleGrid) return;
+    const currentRole = block.querySelector('.role-hidden')?.value;
+    const roleHTML = ROLES.map(r =>
+      `<button type="button" class="role-btn${r === currentRole ? ' selected' : ''}" data-role="${r}">${r}</button>`
+    ).join('') + `<button type="button" class="role-btn custom-role-btn${currentRole === 'Other' ? ' selected' : ''}" data-role="Other">อื่นๆ</button>`;
+    roleGrid.innerHTML = roleHTML;
+    // Re-wire click handlers
+    block.querySelectorAll('.role-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        block.querySelectorAll('.role-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        const customInput = block.querySelector('.custom-role-input');
+        const roleName = btn.dataset.role;
+        if (btn.classList.contains('custom-role-btn')) {
+          customInput.style.display = 'block'; customInput.focus();
+          block.querySelector('.role-hidden').value = 'Other';
+        } else {
+          customInput.style.display = 'none';
+          block.querySelector('.role-hidden').value = roleName;
+        }
+        const preset = ROLE_PRESETS[roleName];
+        if (preset) {
+          block.querySelectorAll('.perm-check').forEach(c => { c.checked = false; c.indeterminate = false; });
+          if (preset.all) {
+            block.querySelectorAll('.perm-check').forEach(c => c.checked = true);
+          } else {
+            preset.categories?.forEach(cat => {
+              const pCb = block.querySelector(`.perm-parent-check[data-cat="${cat}"]`);
+              if (pCb) pCb.checked = true;
+              block.querySelectorAll(`.perm-child-check[data-parent="${cat}"]`).forEach(c => c.checked = true);
+            });
+            preset.items?.forEach(item => {
+              block.querySelectorAll('.perm-child-check').forEach(c => {
+                if (c.nextElementSibling?.textContent?.trim() === item) c.checked = true;
+              });
+            });
+          }
+          block.querySelectorAll('.perm-child-check').forEach(c => c.dispatchEvent(new Event('change')));
+        }
+      });
+    });
   });
 }
 
