@@ -47,6 +47,7 @@ let allRequests = [];
 let selectedCategoryForMenu = null;
 let firebaseReady = false;
 let unsubscribeHistoryListener = null;
+let unsubscribeMenuListener = null;
 
 // ── ROLE-BASED ACCESS ──────────────────────────────────────
 // Emails with FULL access (approve/reject + Admin tab)
@@ -155,6 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       resetIdleTimer();
       startHistoryListener();
+      loadMenuFromFirebase(); // Fetch menus after auth has resolved context
     } else {
       isAdminAuthenticated = false;
       adminRole = null;
@@ -164,6 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.restricted-tab').forEach(el => el.style.display = 'none');
       clearTimeout(idleTimeout);
       if (unsubscribeHistoryListener) { unsubscribeHistoryListener(); unsubscribeHistoryListener = null; }
+      if (unsubscribeMenuListener) { unsubscribeMenuListener(); unsubscribeMenuListener = null; }
       allRequests = [];
       switchTab('create');
     }
@@ -314,6 +317,7 @@ function initReportForm() {
 
 // ── MENU STRUCTURE (Firebase with fallback) ──────────────────
 async function loadMenuFromFirebase() {
+  if (unsubscribeMenuListener) return; // Already listening
   try {
     const docRef = doc(db, 'system_settings', 'menu_structure');
     const snap = await getDoc(docRef);
@@ -351,7 +355,7 @@ async function loadMenuFromFirebase() {
     }
 
     // Real-time listener for menu structure
-    onSnapshot(docRef, (snap) => {
+    unsubscribeMenuListener = onSnapshot(docRef, (snap) => {
       if (snap.exists()) {
         const data = snap.data();
         if (data.menusString) {
