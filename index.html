@@ -27,6 +27,9 @@
     <a class="nav-item restricted-tab" data-tab="admin" style="display:none;">
       <span class="nav-icon">⚙️</span> จัดการเมนู (Admin)
     </a>
+    <a class="nav-item" data-tab="report">
+      <span class="nav-icon">🚨</span> แจ้งปัญหา
+    </a>
   </div>
 
   <div class="sidebar-bottom">
@@ -53,6 +56,7 @@
       <button class="tab-btn active" data-tab="create">➕ เพิ่มผู้ใช้</button>
       <button class="tab-btn restricted-tab" data-tab="history" style="display:none;">📋 ประวัติคำขอ</button>
       <button class="tab-btn restricted-tab" data-tab="admin" style="display:none;">⚙️ Admin</button>
+      <button class="tab-btn" data-tab="report">🚨 แจ้งปัญหา</button>
     </div>
   </div>
 
@@ -120,6 +124,60 @@
     <div id="history-list"></div>
   </div>
 
+  <!-- ══ REPORT TAB ══════════════════════════════════════════ -->
+  <div class="page-section" id="tab-report">
+    <div class="form-card">
+      <div class="form-card-header"><span class="card-icon">🚨</span> แบบฟอร์มแจ้งปัญหา</div>
+      <div class="form-card-body">
+        <div class="form-group" style="margin-bottom:18px">
+          <label class="form-label">ประเภทปัญหา <span class="required">*</span></label>
+          <select class="form-input" id="report-category">
+            <option value="">-- เลือกประเภทปัญหา --</option>
+            <option value="payment">💳 ปัญหาการชำระเงิน</option>
+            <option value="account">👤 ปัญหาบัญชีผู้ใช้งาน</option>
+            <option value="permission">🔐 ปัญหาสิทธิ์การเข้าถึง</option>
+            <option value="report">📊 ปัญหารายงาน / ข้อมูล</option>
+            <option value="notification">🔔 ปัญหาการแจ้งเตือน</option>
+            <option value="store">🏪 ปัญหาข้อมูลร้านค้า</option>
+            <option value="settlement">💰 ปัญหาการตัดรอบ / ยอดคงเหลือ</option>
+            <option value="integration">🔗 ปัญหาการเชื่อมต่อระบบ</option>
+            <option value="performance">⚡ ปัญหาความเร็ว / ระบบช้า</option>
+            <option value="other">❓ อื่นๆ</option>
+          </select>
+        </div>
+        <div id="report-template-area"></div>
+        <div id="report-dynamic-form" style="display:none">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">รหัสร้านค้า (Merchant ID)</label>
+              <input type="text" class="form-input" id="report-merchant-id" placeholder="M-xxxxxx" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">ชื่อผู้แจ้ง / อีเมล <span class="required">*</span></label>
+              <input type="email" class="form-input" id="report-email" placeholder="your@email.com" />
+            </div>
+          </div>
+          <div class="form-group" style="margin-top:14px">
+            <label class="form-label">รายละเอียดปัญหา <span class="required">*</span></label>
+            <textarea class="form-input" id="report-detail" rows="5" placeholder="อธิบายปัญหาที่พบโดยละเอียด..."
+              style="resize:vertical;font-family:inherit;"></textarea>
+          </div>
+          <div class="form-group" style="margin-top:14px">
+            <label class="form-label">ข้อมูลเพิ่มเติม (ถ้ามี)</label>
+            <textarea class="form-input" id="report-extra" rows="3" placeholder="เช่น Error message, ขั้นตอนที่ทำก่อนพบปัญหา..."
+              style="resize:vertical;font-family:inherit;"></textarea>
+          </div>
+          <div class="form-actions" style="margin-top:20px">
+            <button class="btn-reset" id="btn-reset-report">🔄 รีเซ็ต</button>
+            <button class="btn-submit" id="btn-submit-report">
+              <span id="report-submit-text">📤 ส่งแจ้งปัญหา</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ══ ADMIN TAB ═══════════════════════════════════════════ -->
   <div class="page-section" id="tab-admin">
     <div class="form-page-title">⚙️ จัดการเมนู & สิทธิ์</div>
@@ -171,6 +229,10 @@
             <div class="perm-toolbar">
                <button type="button" class="perm-btn" id="preset-select-all">เลือกทั้งหมด</button>
                <button type="button" class="perm-btn" id="preset-clear-all">ล้าง</button>
+            </div>
+            <div class="form-group" style="margin:12px 0">
+              <label class="form-label" style="font-size:0.85rem;color:#6b7ab4;">📝 คำอธิบายบทบาท (แสดงในฟอร์มสร้างผู้ใช้)</label>
+              <textarea id="role-preset-description" rows="2" placeholder="เช่น: สามารถดูรายงานยอดขายและข้อมูลร้านค้า..." style="width:100%;padding:10px;border:1.5px solid #d4def7;border-radius:8px;font-family:inherit;font-size:0.9rem;resize:none;outline:none;" onfocus="this.style.borderColor='#3c63e2'" onblur="this.style.borderColor='#d4def7'"></textarea>
             </div>
             <ul class="perm-tree" id="preset-perm-tree"></ul>
             <div style="display:flex;gap:8px;margin-top:16px;">

@@ -196,6 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
   $('btn-add-user').addEventListener('click', addUserEntry);
   $('btn-reset-form').addEventListener('click', resetForm);
   $('btn-submit-form').addEventListener('click', submitForm);
+  initReportForm();
 });
 
 // ── TABS ─────────────────────────────────────────────────────
@@ -203,6 +204,7 @@ const TAB_TITLES = {
   create: 'สร้างผู้ใช้งานใหม่ (Create Users)',
   history: 'ประวัติคำขอทั้งหมด',
   admin: 'จัดการเมนูและสิทธิ์ (Admin)',
+  report: 'แบบฟอร์มแจ้งปัญหา',
 };
 
 function initTabs() {
@@ -252,6 +254,79 @@ function switchTab(tab) {
   if (section) section.classList.add('active');
   document.querySelectorAll(`[data-tab="${tab}"]`).forEach(b => b.classList.add('active'));
   $('topbar-title').textContent = TAB_TITLES[tab] || '';
+}
+
+// ── REPORT FORM ────────────────────────────────────────────────
+const REPORT_TEMPLATES = {
+  payment:     { label: '💳 ปัญหาการชำระเงิน',           hint: 'ระบุ Transaction ID, เวลา, จำนวนเงิน, ช่องทางการชำระ, สถานะที่พบ' },
+  account:     { label: '👤 บัญชีผู้ใช้งาน',            hint: 'ระบุ Username/Email, ปัญหาที่พบ (Login ไม่ได้, ลืมรหัส, ถูกบล็อค เป็นต้น)' },
+  permission:  { label: '🔐 สิทธิ์การเข้าถึง',           hint: 'ระบุ Username, เมนูที่ไม่สามารถเข้าถึงได้, บทบาทปัจจุบัน vs ที่ต้องการ' },
+  report:      { label: '📊 รายงาน / ข้อมูลผิดพลาด',        hint: 'ระบุช่วงวันที่, ชื่อรายงาน, ค่าที่แสดงผิด vs ค่าที่คาดหวัง' },
+  notification:{ label: '🔔 การแจ้งเตือน',              hint: 'ระบุช่องทางที่ไม่ได้รับ (Email/Line/Push), เหตุการณ์ที่ไม่พบการแจ้งเตือน' },
+  store:       { label: '🏪 ข้อมูลร้านค้า',              hint: 'ระบุไอเทมที่ผิดพลาด (ชื่อ, ที่อยู่, บัญชีธนาคาร) และสิ่งที่ต้องการแก้ไข' },
+  settlement:  { label: '💰 การตัดรอบ / ยอดคงเหลือ',         hint: 'ระบุช่วงเวลาตัดรอบ, ยอดเงินที่คาดหวัง vs ยอดที่ได้รับจริง' },
+  integration: { label: '🔗 เชื่อมต่อระบบ',              hint: 'ระบุระบบที่เชื่อม (API/Webhook/SDK), Error code ที่ได้รับ, เวอร์ชันที่ใช้' },
+  performance: { label: '⚡ ความเร็ว / ระบบช้า',           hint: 'ระบุเวลาที่ระบบช้า, หน้าที่ใช้งาน, Browser และ OS ที่ใช้' },
+  other:       { label: '❓ อื่นๆ',                         hint: 'อธิบายปัญหาโดยละเอียดเท่าที่เป็นไปได้' },
+};
+
+function initReportForm() {
+  const cat = $('report-category');
+  if (!cat) return;
+
+  cat.addEventListener('change', () => {
+    const val = cat.value;
+    const templateArea = $('report-template-area');
+    const dynamicForm = $('report-dynamic-form');
+    if (!val) { templateArea.innerHTML = ''; dynamicForm.style.display = 'none'; return; }
+    const tmpl = REPORT_TEMPLATES[val];
+    templateArea.innerHTML = `
+      <div style="background:#f0f4ff;border:1px solid #d4def7;border-radius:8px;padding:14px;margin-bottom:16px;">
+        <div style="font-weight:700;color:#3c63e2;margin-bottom:6px;">${tmpl.label}</div>
+        <div style="font-size:0.88rem;color:#6b7ab4;"><strong>💡 ข้อมูลที่ควรระบุ:</strong> ${tmpl.hint}</div>
+      </div>`;
+    dynamicForm.style.display = 'block';
+    $('report-detail').placeholder = 'อธิบาย: ' + tmpl.hint;
+  });
+
+  $('btn-reset-report')?.addEventListener('click', () => {
+    cat.value = '';
+    $('report-template-area').innerHTML = '';
+    $('report-dynamic-form').style.display = 'none';
+    $('report-merchant-id').value = '';
+    $('report-email').value = '';
+    $('report-detail').value = '';
+    $('report-extra').value = '';
+  });
+
+  $('btn-submit-report')?.addEventListener('click', async () => {
+    const category = cat.value;
+    const email = $('report-email').value.trim();
+    const detail = $('report-detail').value.trim();
+    if (!category) { showToast('กรุณาเลือกประเภทปัญหา', 'error'); return; }
+    if (!email || !email.includes('@')) { showToast('กรุณาระบุอีเมลผู้แจ้ง', 'error'); return; }
+    if (!detail) { showToast('กรุณาระบุรายละเอียดปัญหา', 'error'); return; }
+
+    const btn = $('btn-submit-report');
+    btn.disabled = true;
+    $('report-submit-text').textContent = 'กำลังส่ง...';
+    try {
+      await addDoc(collection(db, 'issue_reports'), {
+        category, categoryLabel: REPORT_TEMPLATES[category]?.label || category,
+        merchantId: $('report-merchant-id').value.trim(),
+        reporterEmail: email,
+        detail, extraInfo: $('report-extra').value.trim(),
+        status: 'open', createdAt: serverTimestamp(),
+      });
+      showToast('✅ ส่งแจ้งปัญหาสำเร็จ!', 'success');
+      $('btn-reset-report').click();
+    } catch(e) {
+      showToast('✖️ เกิดข้อผิดพลาด: ' + e.message, 'error');
+    } finally {
+      btn.disabled = false;
+      $('report-submit-text').textContent = '📤 ส่งแจ้งปัญหา';
+    }
+  });
 }
 
 // ── MENU STRUCTURE (Firebase with fallback) ──────────────────
@@ -1142,11 +1217,12 @@ function initRoleAdminPanel() {
     const tree = $('preset-perm-tree');
     const totalChecks = tree.querySelectorAll('.perm-check');
     const checkedCount = [...totalChecks].filter(c => c.checked).length;
+    const description = $('role-preset-description')?.value.trim() || '';
 
     if (checkedCount === totalChecks.length && totalChecks.length > 0) {
-      ROLE_PRESETS[currentEditingRole] = { all: true };
+      ROLE_PRESETS[currentEditingRole] = { all: true, description };
     } else {
-      const newPreset = { categories: [], items: [] };
+      const newPreset = { categories: [], items: [], description };
       tree.querySelectorAll('.perm-parent-check').forEach(p => {
         if (p.checked) newPreset.categories.push(p.dataset.cat);
       });
@@ -1222,6 +1298,9 @@ function openRolePresetEditor(role) {
   $('editing-role-title').textContent = `แก้ไขสิทธิ์ของ: ${role}`;
   $('preset-perm-tree').innerHTML = buildPermissionTreeHTML();
   $('role-preset-editor').style.display = 'block';
+  // Load saved description
+  const descEl = $('role-preset-description');
+  if (descEl) descEl.value = ROLE_PRESETS[role]?.description || '';
 
   const preset = ROLE_PRESETS[role] || {};
   const tree = $('preset-perm-tree');
