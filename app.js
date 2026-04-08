@@ -1256,6 +1256,9 @@ function initRoleAdminPanel() {
       renderRoleAdminList();
     }
   });
+
+  // Initial render so the list is populated right away
+  renderRoleAdminList();
 }
 
 // Called every time roles data updates - only renders the list rows
