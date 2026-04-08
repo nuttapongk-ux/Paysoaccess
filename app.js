@@ -1,6 +1,6 @@
 // ══════════════════════════════════════════════════════════════
 //  Merchant Control – User & Role Request System
-//  app.js – Full Working Version with Firebase + Mockup Fallback
+//  app.js – Firebase-only version (no mockup data)
 // ══════════════════════════════════════════════════════════════
 
 import { db, auth } from './firebase-config.js';
@@ -12,27 +12,10 @@ import {
   signInWithEmailAndPassword, signOut, onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-// ── CONSTANTS & DYNAMIC VARS ─────────────────────────────────
-let ROLES = ['sales', 'manager', 'accounting', 'IT', 'Admin', 'CEO'];
-let ROLE_PRESETS = {
-  'Admin': { all: true },
-  'CEO': { all: true },
-  'sales': { categories: ['แดชบอร์ด', 'รายการสั่งซื้อและผู้ซื้อ', 'รายงาน'], items: ['รายการสั่งซื้อทั้งหมด', 'รายงานยอดขาย'] },
-  'manager': { categories: ['แดชบอร์ด', 'ยอดรวมรายได้', 'รายการสั่งซื้อและผู้ซื้อ', 'จัดการข้อมูลร้านค้า', 'รายงาน'] },
-  'accounting': { categories: ['แดชบอร์ด', 'ยอดรวมรายได้', 'รายงาน'], items: ['รายงานการเงิน', 'ส่งออกรายงาน PDF', 'อัตราแลกเปลี่ยน'] },
-  'IT': { categories: ['แดชบอร์ด', 'จัดการผู้ใช้งาน', 'การแจ้งเตือน'] },
-};
-const DEFAULT_MENUS = {
-  'แดชบอร์ด': [],
-  'ยอดรวมรายได้': [],
-  'รายการสั่งซื้อและผู้ซื้อ': ['รายการสั่งซื้อทั้งหมด', 'คืนเงินหรือยกเลิกรายการ', 'อัตราแลกเปลี่ยน'],
-  'จัดการข้อมูลร้านค้า': ['ตั้งค่าเบื้องต้น', 'ข้อมูลส่วนตัว', 'แก้ไขข้อมูลส่วนตัว', 'แก้ไขข้อมูลบัญชีธนาคาร'],
-  'จัดการผู้ใช้งาน': ['เพิ่มผู้ใช้งาน', 'แก้ไขสิทธิ์ผู้ใช้งาน', 'ลบผู้ใช้งาน'],
-  'รายงาน': ['รายงานยอดขาย', 'รายงานการเงิน', 'ส่งออกรายงาน PDF'],
-  'การแจ้งเตือน': ['การแจ้งเตือนระบบ', 'การแจ้งเตือนทางอีเมล'],
-};
-
-// Mockups deleted per user request
+// ── DYNAMIC VARS (loaded from Firebase) ───────────────────────
+let ROLES = [];        // loaded from Firestore system_settings
+let ROLE_PRESETS = {}; // loaded from Firestore system_settings
+const DEFAULT_MENUS = {}; // no hardcoded menus — managed via Admin panel
 
 // ── STATE & IDLE LOGIC ───────────────────────────────────────
 let userEntryCount = 0;
@@ -658,7 +641,8 @@ async function submitForm() {
   try {
     const requestData = {
       merchantId, merchantName, users: usersData,
-      status: 'pending', requestedBy: 'admin@merchant.com',
+      status: 'pending',
+      requestedBy: auth.currentUser?.email || 'guest',
       createdAt: serverTimestamp(),
     };
     await addDoc(collection(db, 'user_requests'), requestData);
